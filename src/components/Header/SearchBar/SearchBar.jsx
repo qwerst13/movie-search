@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './App.scss';
+import './SearchBar.scss';
 
-function App() {
+function SearchBar() {
   return <div />
 }
 
-App.propTypes = {
-  
-}
-
-export default App;
+export default SearchBar;

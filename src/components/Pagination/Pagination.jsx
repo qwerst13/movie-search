@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './App.scss';
+import './Pagination.scss';
 
-function App() {
+function Pagination() {
   return <div />
 }
 
-App.propTypes = {
-  
-}
-
-export default App;
+export default Pagination;

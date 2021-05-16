@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './App.scss';
+import './ItemList.scss';
 
-function App() {
+function ItemList() {
   return <div />
 }
 
-App.propTypes = {
-  
-}
-
-export default App;
+export default ItemList;
