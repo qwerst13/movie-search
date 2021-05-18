@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React from 'react';
-import { Layout, Pagination, Row, Col } from 'antd';
+import { Layout, Pagination, Row, Col, Spin } from 'antd';
 
 import SearchBar from './components/SearchBar';
 import Filter from './components/Filter';
@@ -7,40 +8,61 @@ import Filter from './components/Filter';
 import 'antd/dist/antd.css';
 import './App.scss';
 import ItemList from './components/ItemList';
+import ApiClient from './services/ApiClient';
 
-function App() {
-  const { Header, Footer, Content } = Layout;
+export default class App extends React.Component {
+  apiClient = new ApiClient();
 
-  return (
-    <Row>
-      <Col span={5} />
-      <Col flex="auto">
-        <Layout className="wrapper">
-          <Header className="header">
-            <Row justify="center">
-              <Filter />
-            </Row>
-            <Row justify="center">
-              <SearchBar />
-            </Row>
-          </Header>
+  state = {
+    data: [],
+    isLoading: true,
+  };
 
-          <Content className="content">
-            <Row justify="center">
-              <ItemList />
-            </Row>
-          </Content>
+  constructor() {
+    super();
+    this.apiClient.getFilmsByName('return').then((data) => {
+      this.setState({ data, isLoading: false });
+      console.log(data);
+    });
+  }
 
-          <Footer className="footer">
-            <Row justify="center">
-              <Pagination size="small" total={50} />
-            </Row>
-          </Footer>
-        </Layout>
-      </Col>
-      <Col span={5} />
-    </Row>
-  );
+  render() {
+    const { data, isLoading } = this.state;
+    const { Header, Footer, Content } = Layout;
+
+    const loader = <Spin size="large" tip="Loading..." />;
+    const content = <ItemList data={data} />;
+
+    return (
+      // todo раздеслить логику -> AppLayout и рендеринг -> App
+      <Row>
+        <Col span={5} />
+        <Col span={14}>
+          <Layout className="wrapper">
+            <Header className="header">
+              <Row justify="center">
+                <Filter />
+              </Row>
+              <Row justify="center">
+                <SearchBar />
+              </Row>
+            </Header>
+
+            <Content className="content">
+              <Row justify="center">{isLoading ? loader : content}</Row>
+            </Content>
+
+            <Footer className="footer">
+              <Row justify="center">
+                <Pagination size="small" total={50} />
+              </Row>
+            </Footer>
+          </Layout>
+        </Col>
+        <Col span={5} />
+      </Row>
+    );
+  }
 }
 
-export default App;
+const AppLayout = () => {};

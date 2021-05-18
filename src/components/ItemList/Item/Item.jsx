@@ -1,43 +1,26 @@
+/* eslint-disable */
 import React from 'react';
-import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
-
-import ApiClient from '../../../services/ApiClient';
+// eslint-disable-next-line no-unused-vars
+import { Card, Rate, Row, Space, Tag, Typography, Alert, Spin } from 'antd';
 
 import './Item.scss';
 
+// eslint-disable-next-line react/prefer-stateless-function
 export default class Item extends React.Component {
-  apiClient = new ApiClient();
-
-  state = {
-    title: null,
-    rate: null,
-    genres: ['', '', ''],
-    releaseDate: null,
-    overview: null,
-  };
-
-  constructor() {
-    super();
-    this.updateItem();
-  }
-
-  updateItem() {
-    this.apiClient.getFilm(101).then((film) => {
-      this.setState({
-        poster: film.poster_path,
-        title: film.title,
-        rate: film.vote_average,
-        genres: film.genres,
-        releaseDate: film.release_date,
-        overview: film.overview,
-      });
-    });
-  }
-
   render() {
-    const { poster, title, rate, genres, releaseDate, overview } = this.state;
     const { Title, Text, Paragraph } = Typography;
+    const { data } = this.props;
 
+    const {
+      poster_path: poster = 'null',
+      original_title: title = 'null',
+      vote_average: rate = 'null',
+      genre_ids: genres = 'null',
+      release_date: releaseDate = 'null',
+      overview = 'null',
+    } = data;
+
+    // eslint-disable-next-line no-unreachable
     return (
       <Card className="item" hoverable>
         <Card.Grid hoverable={false} className="poster">
@@ -53,9 +36,9 @@ export default class Item extends React.Component {
             <Text type="secondary">{releaseDate}</Text>
 
             <Row>
-              <Tag className="tag">{genres[0].name || ''}</Tag>
-              <Tag className="tag">{genres[1].name || ''}</Tag>
-              <Tag className="tag">{genres[1].name || ''}</Tag>
+              <Tag className="tag">{genres[0]}</Tag>
+              <Tag className="tag">{genres[0]}</Tag>
+              <Tag className="tag">{genres[0]}</Tag>
             </Row>
             <Paragraph
               ellipsis={{
@@ -66,14 +49,7 @@ export default class Item extends React.Component {
               {overview}
             </Paragraph>
           </Space>
-          <Rate
-            className="rate"
-            count={10}
-            // todo не работает если передавать rate(
-            defaultValue={rate}
-            allowHalf
-            disabled
-          />
+          <Rate className="rate" count={10} defaultValue={rate} allowHalf disabled />
         </Card.Grid>
       </Card>
     );

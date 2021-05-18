@@ -27,6 +27,8 @@
         "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}],
         "no-restricted-syntax": "off",
         "class-methods-use-this": "off",
+        "no-underscore-dangle": "off",
+        "no-return-await": "off",
         "jsx-a11y/href-no-hash": "off",
         "jsx-a11y/anchor-is-valid": "off",
         "jsx-a11y/no-noninteractive-element-interactions": "off",
