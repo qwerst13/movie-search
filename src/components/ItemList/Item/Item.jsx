@@ -4,45 +4,50 @@ import React from 'react';
 import { Card, Rate, Row, Space, Tag, Typography, Alert, Spin } from 'antd';
 
 import './Item.scss';
+import noImage from './no-image.png';
+import ApiClient from '../../../services/ApiClient';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class Item extends React.Component {
+  client = new ApiClient();
   render() {
     const { Title, Text, Paragraph } = Typography;
-    const { data } = this.props;
+    const { Grid } = Card;
+    const { data, genres } = this.props;
 
     const {
       poster_path: poster = 'null',
       original_title: title = 'null',
       vote_average: rate = 'null',
-      genre_ids: genres = 'null',
+      genre_ids: genreIds = [],
       release_date: releaseDate = 'null',
       overview = 'null',
     } = data;
 
-    // eslint-disable-next-line no-unreachable
-    return (
-      <Card className="item" hoverable>
-        <Card.Grid hoverable={false} className="poster">
-          <img alt="poster" src={`https://image.tmdb.org/t/p/w200${poster}`} />
-        </Card.Grid>
+    const genreTags = genreIds.map((item, i) => {
+      return (i<3) ? <Tag key={item} className="tag">{genres.get(item)}</Tag> : null;
+    });
 
-        <Card.Grid hoverable={false} className="cardContent">
-          <Row justify="space-between">
-            <Title level={4}>{title}</Title>
+    return (
+      <Card className="item">
+        <Grid hoverable={false} className="poster">
+          <img alt="poster" src={poster ? `https://image.tmdb.org/t/p/w200${poster}` : noImage} />
+        </Grid>
+
+        <Grid hoverable={false} className="cardContent">
+          <Row className='cardTitle' justify="space-between">
+            <Title className='titleText' level={4}>{title}</Title>
             <div className="titleRate">{rate}</div>
           </Row>
           <Space direction="vertical">
             <Text type="secondary">{releaseDate}</Text>
 
             <Row>
-              <Tag className="tag">{genres[0]}</Tag>
-              <Tag className="tag">{genres[0]}</Tag>
-              <Tag className="tag">{genres[0]}</Tag>
+              {genreTags}
             </Row>
             <Paragraph
               ellipsis={{
-                rows: 7,
+                rows: 6,
                 expandable: false,
               }}
             >
@@ -50,7 +55,7 @@ export default class Item extends React.Component {
             </Paragraph>
           </Space>
           <Rate className="rate" count={10} defaultValue={rate} allowHalf disabled />
-        </Card.Grid>
+        </Grid>
       </Card>
     );
   }

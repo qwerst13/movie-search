@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import { Layout, Pagination, Row, Col, Spin } from 'antd';
+import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
 
 import SearchBar from './components/SearchBar';
 import Filter from './components/Filter';
@@ -16,22 +16,49 @@ export default class App extends React.Component {
   state = {
     data: [],
     isLoading: true,
+    error: false,
+    genres: new Map()
   };
 
   constructor() {
     super();
-    this.apiClient.getFilmsByName('return').then((data) => {
-      this.setState({ data, isLoading: false });
-      console.log(data);
+
+    this.apiClient.getFilmById(101).then((data) => {
+      this.setState({ data: [data], isLoading: false })
+    })
+
+    this.apiClient.getGenresMap().then((data) => {
+      this.setState({genres: data})
     });
   }
 
+  onError = (error) => {
+    this.setState({error: true, isLoading: false})
+  }
+
+  onSearch = (value) => {
+    this.setState({isLoading: true});
+
+    this.apiClient.getFilmsByName(value).then((data) => {
+      this.setState({ data, isLoading: false });
+      console.log(data);
+    }).catch(this.onError);
+  }
+
   render() {
-    const { data, isLoading } = this.state;
+    const { data, isLoading, error, genres } = this.state;
     const { Header, Footer, Content } = Layout;
 
-    const loader = <Spin size="large" tip="Loading..." />;
-    const content = <ItemList data={data} />;
+    const hasData = !(isLoading || error);
+
+    const errorMessage = error ? <Alert
+      message="Error"
+      description="Something went wrong. Check your Internet connection or try later."
+      type="error"
+      showIcon
+    /> : null;
+    const loader = isLoading ? <Spin size="large" tip="Searching..." /> : null;
+    const content = hasData ? <ItemList data={data} genres={genres} /> : null;
 
     return (
       // todo раздеслить логику -> AppLayout и рендеринг -> App
@@ -44,12 +71,16 @@ export default class App extends React.Component {
                 <Filter />
               </Row>
               <Row justify="center">
-                <SearchBar />
+                <SearchBar onSearch={this.onSearch}/>
               </Row>
             </Header>
 
             <Content className="content">
-              <Row justify="center">{isLoading ? loader : content}</Row>
+              <Row justify="center">
+                {errorMessage}
+                {loader}
+                {content}
+              </Row>
             </Content>
 
             <Footer className="footer">

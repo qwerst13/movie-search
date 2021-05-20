@@ -1,26 +1,44 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './SearchBar.scss';
-import { Input, AutoComplete } from 'antd';
+import { Input } from 'antd';
 
-const renderItem = (title) => ({
-  value: title,
-  label: <div>{title}</div>,
-});
 
-const options = [renderItem('first'), renderItem('second'), renderItem('third')];
+export default class SearchBar extends React.Component {
+  static defaultProps = {
+    onSearch: () => {}
+  }
 
-const SearchBar = () => (
-  <AutoComplete
-    dropdownClassName="certain-category-search-dropdown"
-    style={{
-      width: '100%',
-      margin: '24px auto',
-    }}
-    options={options}
-  >
-    <Input.Search size="large" placeholder="Type to search..." />
-  </AutoComplete>
-);
+  static propTypes = {
+    onSearch: PropTypes.func,
+  }
 
-export default SearchBar;
+  state = {
+    value: ''
+  }
+
+  onChange = (event) => {
+    const {value} = event.target;
+
+    this.setState({value});
+  }
+
+  onSearch = () => {
+    const {value} = this.state;
+    const {onSearch} = this.props;
+
+    onSearch(value);
+  }
+
+  render() {
+    return <Input.Search
+      className='searchBar'
+      size="large"
+      placeholder="Type to search..."
+      onChange={this.onChange}
+      onSearch={this.onSearch}
+    />
+  }
+};
+
