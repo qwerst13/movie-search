@@ -2,11 +2,11 @@
 import React from 'react';
 import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
 
-import SearchBar from './components/SearchBar';
-import Filter from './components/Filter';
-
 import 'antd/dist/antd.css';
 import './App.scss';
+// important to place components after css
+import SearchBar from './components/SearchBar';
+import Filter from './components/Filter';
 import ItemList from './components/ItemList';
 import ApiClient from './services/ApiClient';
 
@@ -20,9 +20,7 @@ export default class App extends React.Component {
     genres: new Map()
   };
 
-  constructor() {
-    super();
-
+  componentDidMount() {
     this.apiClient.getFilmById(101).then((data) => {
       this.setState({ data: [data], isLoading: false })
     })
@@ -37,7 +35,7 @@ export default class App extends React.Component {
   }
 
   onSearch = (value) => {
-    this.setState({isLoading: true});
+    this.setState({isLoading: true, error: false});
 
     this.apiClient.getFilmsByName(value).then((data) => {
       this.setState({ data, isLoading: false });
