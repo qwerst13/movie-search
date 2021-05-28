@@ -1,81 +1,73 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
 
-import ApiClient from '../../../services/ApiClient';
-
 import './Item.scss';
+import noImage from './no-image.png';
 
-export default class Item extends React.Component {
-  apiClient = new ApiClient();
+function Item(props) {
+  const { Title, Text, Paragraph } = Typography;
+  const { Grid } = Card;
+  const { data: {
+    poster_path: poster = '',
+    original_title: title = '',
+    vote_average: rate = 0,
+    genre_ids: genreIds = [],
+    release_date: releaseDate = '',
+    overview = '',
+  }, genres } = props;
 
-  state = {
-    title: null,
-    rate: null,
-    genres: ['', '', ''],
-    releaseDate: null,
-    overview: null,
-  };
+  const genreTags = genreIds.map(
+    (item, i) => (i<3) ? <Tag key={item} className="tag">{genres.get(item)}</Tag> : null
+  );
 
-  constructor() {
-    super();
-    this.updateItem();
-  }
+  return (
+    <Card className="item">
+      <Grid hoverable={false} className="poster">
+        <img alt="poster" src={poster ? `https://image.tmdb.org/t/p/w200${poster}` : noImage} />
+      </Grid>
 
-  updateItem() {
-    this.apiClient.getFilm(101).then((film) => {
-      this.setState({
-        poster: film.poster_path,
-        title: film.title,
-        rate: film.vote_average,
-        genres: film.genres,
-        releaseDate: film.release_date,
-        overview: film.overview,
-      });
-    });
-  }
+      <Grid hoverable={false} className="cardContent">
+        <Row className='cardTitle' justify="space-between">
+          <Title
+            className='titleText'
+            level={4}
+            ellipsis={{rows: 2, expandable: false}}
+          >
+            {title}
+          </Title>
+          <div className="titleRate">{rate}</div>
+        </Row>
+        <Space direction="vertical">
+          <Text type="secondary">{releaseDate}</Text>
 
-  render() {
-    const { poster, title, rate, genres, releaseDate, overview } = this.state;
-    const { Title, Text, Paragraph } = Typography;
-
-    return (
-      <Card className="item" hoverable>
-        <Card.Grid hoverable={false} className="poster">
-          <img alt="poster" src={`https://image.tmdb.org/t/p/w200${poster}`} />
-        </Card.Grid>
-
-        <Card.Grid hoverable={false} className="cardContent">
-          <Row justify="space-between">
-            <Title level={4}>{title}</Title>
-            <div className="titleRate">{rate}</div>
+          <Row>
+            {genreTags}
           </Row>
-          <Space direction="vertical">
-            <Text type="secondary">{releaseDate}</Text>
-
-            <Row>
-              <Tag className="tag">{genres[0].name || ''}</Tag>
-              <Tag className="tag">{genres[1].name || ''}</Tag>
-              <Tag className="tag">{genres[1].name || ''}</Tag>
-            </Row>
-            <Paragraph
-              ellipsis={{
-                rows: 7,
-                expandable: false,
-              }}
-            >
-              {overview}
-            </Paragraph>
-          </Space>
-          <Rate
-            className="rate"
-            count={10}
-            // todo не работает если передавать rate(
-            defaultValue={rate}
-            allowHalf
-            disabled
-          />
-        </Card.Grid>
-      </Card>
-    );
-  }
+          <Paragraph
+            ellipsis={{
+              rows: 6,
+              expandable: false,
+            }}
+          >
+            {overview}
+          </Paragraph>
+        </Space>
+        <Rate className="rate" count={10} defaultValue={rate} allowHalf disabled />
+      </Grid>
+    </Card>
+  );
 }
+
+Item.defaultProps = {
+  data: {},
+  genres: new Map()
+}
+
+Item.propTypes = {
+  data: PropTypes.instanceOf(Object),
+  genres: PropTypes.instanceOf(Map)
+}
+
+export default Item;

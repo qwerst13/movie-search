@@ -1,32 +1,35 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import PropTypes from 'prop-types';
 
-import Item from './Item';
+import { Alert } from 'antd';
 
 import './ItemList.scss';
 
-function ItemList() {
-  return (
-    <div>
-      <Row className="rowWrapper" gutter={24}>
-        <Col span={12}>
-          <Item />
-        </Col>
-        <Col span={12}>
-          <Item />
-        </Col>
-      </Row>
+import Item from './Item';
 
-      <Row className="rowWrapper" gutter={24}>
-        <Col span={12}>
-          <Item />
-        </Col>
-        <Col span={12}>
-          <Item />
-        </Col>
-      </Row>
-    </div>
-  );
+function ItemList(props) {
+  const { data, genres } = props;
+
+  const elements = (data.length > 0)
+    ? data.map((item) => <Item key={item.id} data={item} genres={genres} />)
+    : <Alert
+      message="Nothing found"
+      description="Try to search something less specific"
+      type="info"
+      showIcon
+    />
+
+  return <div className="itemList">{elements}</div>;
+}
+
+ItemList.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  genres: PropTypes.instanceOf(Map)
+};
+
+ItemList.defaultProps = {
+  data: [],
+  genres: new Map()
 }
 
 export default ItemList;

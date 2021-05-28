@@ -9,7 +9,6 @@ class Filter extends React.Component {
   };
 
   handleClick = (event) => {
-    console.log('click ', event);
     this.setState({ current: event.key });
   };
 
