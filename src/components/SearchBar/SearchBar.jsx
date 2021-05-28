@@ -6,42 +6,42 @@ import { Input } from 'antd';
 
 import './SearchBar.scss';
 
-
 export default class SearchBar extends React.Component {
   static defaultProps = {
-    onSearch: () => {}
-  }
+    onSearch: () => {},
+  };
 
   static propTypes = {
     onSearch: PropTypes.func,
-  }
+  };
 
   state = {
-    value: ''
-  }
+    value: '',
+  };
 
   onChange = (event) => {
-    const {value} = event.target;
+    const { value } = event.target;
 
-    this.setState({value});
+    this.setState({ value });
 
     this.onSearch();
-  }
+  };
 
   onSearch = () => {
-    const {value} = this.state;
-    const {onSearch} = this.props;
+    const { value } = this.state;
+    const { onSearch } = this.props;
 
     onSearch(value);
-  }
+  };
 
   render() {
-    return <Input
-      className='searchBar'
-      size="large"
-      placeholder="Type to search..."
-      onChange={_.debounce(this.onChange, 1000)}
-    />
+    return (
+      <Input
+        className="searchBar"
+        size="large"
+        placeholder="Type to search..."
+        onChange={_.debounce(this.onChange, 1000)}
+      />
+    );
   }
-};
-
+}
