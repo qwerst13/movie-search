@@ -1,13 +1,40 @@
 .item {
   width: 500px;
   height: 300px;
-  box-shadow: 1px 1px 5px 0 lightgray;
+  margin: 12px;
+  box-shadow: 1px 1px 3px 0 lightgray;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 1px 1px 5px 3px lightskyblue;
+  }
 }
 .poster {
   width: 200px;
   height: 100%;
   padding: 0;
   overflow: hidden;
+
+  img {
+    width: 200px;
+  }
+}
+.cardTitle {
+
+  .titleText {
+    flex-basis: 85%;
+  }
+  .titleRate {
+
+    width: 32px;
+    height: 32px;
+    border: 2px solid gold;
+    border-radius: 50%;
+    font-weight: 700;
+    text-align: center;
+    line-height: 28px;
+  }
+
 }
 // todo ширину высчитать по формуле, высота равна высоте .item
 .cardContent {
@@ -22,15 +49,7 @@
 .tag{
   font-size: 12px;
 }
-.titleRate {
-  width: 32px;
-  height: 32px;
-  border: 2px solid gold;
-  border-radius: 50%;
-  font-weight: 700;
-  text-align: center;
-  line-height: 28px;
-}
+
 .rate {
   font-size: 18px;
   align-self: center;

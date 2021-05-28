@@ -9,24 +9,17 @@ import noImage from './no-image.png';
 function Item(props) {
   const { Title, Text, Paragraph } = Typography;
   const { Grid } = Card;
-  const {
-    data: {
-      poster_path: poster = '',
-      original_title: title = '',
-      vote_average: rate = 0,
-      genre_ids: genreIds = [],
-      release_date: releaseDate = '',
-      overview = '',
-    },
-    genres,
-  } = props;
+  const { data: {
+    poster_path: poster = '',
+    original_title: title = '',
+    vote_average: rate = 0,
+    genre_ids: genreIds = [],
+    release_date: releaseDate = '',
+    overview = '',
+  }, genres } = props;
 
-  const genreTags = genreIds.map((item, i) =>
-    i < 3 ? (
-      <Tag key={item} className="tag">
-        {genres.get(item)}
-      </Tag>
-    ) : null
+  const genreTags = genreIds.map(
+    (item, i) => (i<3) ? <Tag key={item} className="tag">{genres.get(item)}</Tag> : null
   );
 
   return (
@@ -36,8 +29,12 @@ function Item(props) {
       </Grid>
 
       <Grid hoverable={false} className="cardContent">
-        <Row className="cardTitle" justify="space-between">
-          <Title className="titleText" level={4} ellipsis={{ rows: 2, expandable: false }}>
+        <Row className='cardTitle' justify="space-between">
+          <Title
+            className='titleText'
+            level={4}
+            ellipsis={{rows: 2, expandable: false}}
+          >
             {title}
           </Title>
           <div className="titleRate">{rate}</div>
@@ -45,7 +42,9 @@ function Item(props) {
         <Space direction="vertical">
           <Text type="secondary">{releaseDate}</Text>
 
-          <Row>{genreTags}</Row>
+          <Row>
+            {genreTags}
+          </Row>
           <Paragraph
             ellipsis={{
               rows: 6,
@@ -63,12 +62,12 @@ function Item(props) {
 
 Item.defaultProps = {
   data: {},
-  genres: new Map(),
-};
+  genres: new Map()
+}
 
 Item.propTypes = {
   data: PropTypes.instanceOf(Object),
-  genres: PropTypes.instanceOf(Map),
-};
+  genres: PropTypes.instanceOf(Map)
+}
 
 export default Item;
