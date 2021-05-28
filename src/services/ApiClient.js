@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable */
 export default class ApiClient {
   _host = 'https://api.themoviedb.org';
 
