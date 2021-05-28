@@ -68,7 +68,6 @@ export default class App extends React.Component {
     const content = hasData ? <ItemList data={data} genres={genres} /> : null;
 
     return (
-      // todo раздеслить логику -> AppLayout и рендеринг -> App
       <Row>
         <Col span={5} />
         <Col span={14}>

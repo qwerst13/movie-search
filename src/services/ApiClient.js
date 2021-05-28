@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable max-len */
 export default class ApiClient {
   _host = 'https://api.themoviedb.org';
 
@@ -26,11 +26,10 @@ export default class ApiClient {
       throw new Error(`Something went wrong: ${response}`);
     }
     return await response.json();
-    // todo catch(error => console.log('error', error));?
   }
 
-  getFilmById(id) {
-    return this.getResource(`/3/movie/${id}`);
+  async getFilmById(id) {
+    return await this.getResource(`/3/movie/${id}`);
   }
 
   async getFilmsByName(keyWord, page) {
