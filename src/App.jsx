@@ -1,5 +1,5 @@
-/* eslint-disable */
 import React from 'react';
+
 import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -17,11 +17,14 @@ export default class App extends React.Component {
     data: [],
     isLoading: true,
     error: false,
-    genres: new Map()
+    genres: new Map(),
+    searchPhrase: '',
+    pages: 1,
+    currentPage: 1
   };
 
   componentDidMount() {
-    this.apiClient.getFilmById(101).then((data) => {
+    this.apiClient.getFilmById(Math.floor(101 + Math.random() * (500 + 1 - 101))).then((data) => {
       this.setState({ data: [data], isLoading: false })
     })
 
@@ -30,21 +33,27 @@ export default class App extends React.Component {
     });
   }
 
-  onError = (error) => {
-    this.setState({error: true, isLoading: false})
+  onError = () => {
+    this.setState({error: true, isLoading: false});
   }
 
-  onSearch = (value) => {
-    this.setState({isLoading: true, error: false});
+  onSearch = (value, page = 1) => {
+    this.setState({isLoading: true, error: false, searchPhrase: value, currentPage: page});
 
-    this.apiClient.getFilmsByName(value).then((data) => {
-      this.setState({ data, isLoading: false });
-      console.log(data);
+    this.apiClient.getFilmsByName(value, page).then(({results, total_pages: totalPages}) => {
+      this.setState({ data: results, isLoading: false, pages: totalPages});
+
     }).catch(this.onError);
   }
 
+  onPaginationChange = (page) => {
+    const { searchPhrase } = this.state;
+
+    this.onSearch(searchPhrase, page);
+  }
+
   render() {
-    const { data, isLoading, error, genres } = this.state;
+    const { data, isLoading, error, genres, pages, currentPage } = this.state;
     const { Header, Footer, Content } = Layout;
 
     const hasData = !(isLoading || error);
@@ -83,7 +92,15 @@ export default class App extends React.Component {
 
             <Footer className="footer">
               <Row justify="center">
-                <Pagination size="small" total={50} />
+                <Pagination
+                  size="small"
+                  hideOnSinglePage
+                  current={currentPage}
+                  defaultPageSize={20}
+                  pageSizeOptions={[]}
+                  total={pages*20}
+                  onChange={this.onPaginationChange}
+                />
               </Row>
             </Footer>
           </Layout>
@@ -93,5 +110,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const AppLayout = () => {};

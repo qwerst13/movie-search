@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import './SearchBar.scss';
 import { Input } from 'antd';
+
+import './SearchBar.scss';
+
 
 export default class SearchBar extends React.Component {
   static defaultProps = {
@@ -38,7 +40,7 @@ export default class SearchBar extends React.Component {
       className='searchBar'
       size="large"
       placeholder="Type to search..."
-      onChange={_.debounce(this.onChange, 750)}
+      onChange={_.debounce(this.onChange, 1000)}
     />
   }
 };

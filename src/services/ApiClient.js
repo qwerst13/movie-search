@@ -33,13 +33,11 @@ export default class ApiClient {
     return this.getResource(`/3/movie/${id}`);
   }
 
-  async getFilmsByName(keyWord) {
-    const request = await this.getResource(`/3/search/movie?language=en-US&query=${keyWord}&page=1&include_adult=false`)
-
-    return request.results;
+  async getFilmsByName(keyWord, page) {
+    return await this.getResource(`/3/search/movie?language=en-US&query=${keyWord}&page=${page}&include_adult=false`)
   }
 
-   async getGenresMap() {
+  async getGenresMap() {
      const {genres} = await this.getResource(`/3/genre/movie/list?language=en-US`);
      const genresMap = new Map();
 
