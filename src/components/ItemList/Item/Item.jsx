@@ -1,15 +1,11 @@
 /* eslint-disable */
 import React from 'react';
-// eslint-disable-next-line no-unused-vars
-import { Card, Rate, Row, Space, Tag, Typography, Alert, Spin } from 'antd';
+import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
 
 import './Item.scss';
 import noImage from './no-image.png';
-import ApiClient from '../../../services/ApiClient';
 
-// eslint-disable-next-line react/prefer-stateless-function
 export default class Item extends React.Component {
-  client = new ApiClient();
   render() {
     const { Title, Text, Paragraph } = Typography;
     const { Grid } = Card;
