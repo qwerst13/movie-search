@@ -24,13 +24,32 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    this.apiClient.getFilmById(Math.floor(101 + Math.random() * (500 + 1 - 101))).then((data) => {
+    Promise.all([
+      this.apiClient.getListOfPopularMovies(),
+      this.apiClient.getGenresMap()
+    ])
+      .then(([popularFilms, genres]) => this.setState({
+        data: popularFilms.results,
+        genres,
+        isLoading: false
+      }))
+      .catch(() => {
+        this.setState({
+          error: true,
+          isLoading: false
+        })
+      })
+
+/*
+    this.apiClient.getFilmById(this.randomIntegerNumber(101, 500)).then((data) => {
       this.setState({ data: [data], isLoading: false });
     });
 
     this.apiClient.getGenresMap().then((data) => {
       this.setState({ genres: data });
     });
+    */
+
   }
 
   onError = () => {
@@ -53,6 +72,10 @@ export default class App extends React.Component {
 
     this.onSearch(searchPhrase, page);
   };
+
+  randomIntegerNumber(min, max) {
+    return Math.floor(min + Math.random() * (max + 1 - min))
+  }
 
   render() {
     const { data, isLoading, error, genres, pages, currentPage } = this.state;

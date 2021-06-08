@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 export default class ApiClient {
-  _host = 'https://api.themoviedb.org';
+  _host = 'https://api.themoviedb.org/3';
 
   _requestOptions = {
     method: 'GET',
@@ -28,16 +28,20 @@ export default class ApiClient {
     return await response.json();
   }
 
+  async getListOfPopularMovies() {
+    return await this.getResource('/movie/popular')
+  }
+
   async getFilmById(id) {
-    return await this.getResource(`/3/movie/${id}`);
+    return await this.getResource(`/movie/${id}`);
   }
 
   async getFilmsByName(keyWord, page) {
-    return await this.getResource(`/3/search/movie?language=en-US&query=${keyWord}&page=${page}&include_adult=false`)
+    return await this.getResource(`/search/movie?language=en-US&query=${keyWord}&page=${page}&include_adult=false`)
   }
 
   async getGenresMap() {
-     const {genres} = await this.getResource(`/3/genre/movie/list?language=en-US`);
+     const {genres} = await this.getResource(`/genre/movie/list?language=en-US`);
      const genresMap = new Map();
 
      genres.forEach(({ id, name }) => {
