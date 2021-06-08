@@ -1,22 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
+
+import ApiClient from '../../../services/ApiClient';
 
 import './Item.scss';
 import noImage from './no-image.png';
+
+const apiClient = new ApiClient();
 
 function Item(props) {
   const { Title, Text, Paragraph } = Typography;
   const { Grid } = Card;
   const {
     data: {
-      poster_path: poster = '',
-      original_title: title = '',
-      vote_average: rate = 0,
-      genre_ids: genreIds = [],
-      release_date: releaseDate = '',
-      overview = '',
+      poster_path: poster,
+      original_title: title,
+      vote_average: rate,
+      genre_ids: genreIds,
+      release_date: releaseDate,
+      overview,
+      id,
     },
     genres,
   } = props;
@@ -29,6 +33,13 @@ function Item(props) {
     ) : null
   );
 
+  function setColor(value) {
+    if (value <=3) return '#E90000'
+    if (value <=5) return '#E97E00'
+    if (value <=7) return '#E9D100'
+    return '#66E900'
+  }
+
   return (
     <Card className="item">
       <Grid hoverable={false} className="poster">
@@ -40,7 +51,7 @@ function Item(props) {
           <Title className="titleText" level={4} ellipsis={{ rows: 2, expandable: false }}>
             {title}
           </Title>
-          <div className="titleRate">{rate}</div>
+          <div style={{ 'border': `2px solid ${setColor(rate)}` }} className="titleRate">{rate}</div>
         </Row>
         <Space direction="vertical">
           <Text type="secondary">{releaseDate}</Text>
@@ -55,7 +66,12 @@ function Item(props) {
             {overview}
           </Paragraph>
         </Space>
-        <Rate className="rate" count={10} defaultValue={rate} allowHalf disabled />
+        <Rate
+          className="rate"
+          count={10}
+          defaultValue={0}
+          allowHalf
+          onChange={(value) => {apiClient.rateMovie(id, value)}}/>
       </Grid>
     </Card>
   );

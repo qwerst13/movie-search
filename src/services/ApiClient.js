@@ -2,11 +2,16 @@
 export default class ApiClient {
   _host = 'https://api.themoviedb.org/3';
 
-  _requestOptions = {
-    method: 'GET',
-    headers: this.headers(),
-    redirect: 'follow',
-  };
+  requestOptions(type, data) {
+    const obj = {
+      method: type,
+      headers: this.headers(),
+      redirect: 'follow'
+    }
+    if (data) obj.body = data;
+
+    return obj;
+  }
 
   headers() {
     const myHeaders = new Headers();
@@ -20,11 +25,12 @@ export default class ApiClient {
   }
 
   async getResource(path) {
-    const response = await fetch(`${this._host}${path}`, this._requestOptions);
+    const response = await fetch(`${this._host}${path}`, this.requestOptions('GET'));
 
     if (!response.ok) {
       throw new Error(`Something went wrong: ${response}`);
     }
+
     return await response.json();
   }
 
@@ -58,6 +64,20 @@ export default class ApiClient {
     }
 
     return this.getCookie('id')
+  }
+
+  async getRatedMovies() {
+    const guestSessionId = this.getCookie('id');
+
+    return await this.getResource(`/guest_session/${guestSessionId}/rated/movies?language=en-US&sort_by=created_at.asc`);
+  }
+
+  rateMovie(movieId, value) {
+    const guestSessionId = this.getCookie('id');
+    const formData = new FormData();
+    formData.append("value", value);
+
+    fetch(`${this._host}/movie/${movieId}/rating?guest_session_id=${guestSessionId}`, this.requestOptions('POST', formData));
   }
 
   setDailyCookie(key, value) {
