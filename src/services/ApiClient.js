@@ -50,4 +50,26 @@ export default class ApiClient {
 
      return genresMap;
   }
+
+  async getGuestSessionId() {
+    if (!this.getCookie('id')) {
+      const { guest_session_id: guestSessionId } = await this.getResource('/authentication/guest_session/new');
+      this.setDailyCookie('id', guestSessionId);
+    }
+
+    return this.getCookie('id')
+  }
+
+  setDailyCookie(key, value) {
+    let date = new Date(Date.now() + 86400e3);
+    date = date.toUTCString();
+    document.cookie = `${key}=${value}; path=/; samesite=strict; expires=${date}`;
+  }
+
+  getCookie(name) {
+    const matches = document.cookie.match(new RegExp(
+      `(?:^|; )${  name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')  }=([^;]*)`
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  }
 }
