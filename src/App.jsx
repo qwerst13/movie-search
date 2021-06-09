@@ -22,6 +22,7 @@ export default class App extends React.Component {
     searchPhrase: '',
     pages: 1,
     currentPage: 1,
+    currentTab: 'Search'
   };
 
   componentDidMount() {
@@ -48,6 +49,11 @@ export default class App extends React.Component {
   };
 
   onSearch = (value, page = 1) => {
+    if (!value) {
+      this.setState({isLoading: false, error: false, searchPhrase: '', data: [], pages: 1, currentPage: 1 });
+      return;
+    }
+
     this.setState({ isLoading: true, error: false, searchPhrase: value, currentPage: page });
 
     this.apiClient
@@ -58,28 +64,51 @@ export default class App extends React.Component {
       .catch(this.onError);
   };
 
-  onPaginationChange = (page) => {
-    const { searchPhrase } = this.state;
+  onRated = (page = 1) => {
+    this.setState({ isLoading: true, error: false, currentPage: page });
 
-    this.onSearch(searchPhrase, page);
+    this.apiClient
+      .getRatedMovies(page)
+      .then(({ results, total_pages: totalPages }) => {
+        this.setState({ data: results, isLoading: false, pages: totalPages });
+      })
+      .catch(this.onError);
+  }
+
+  onPaginationChange = (page) => {
+    const { searchPhrase, currentTab } = this.state;
+
+    if (currentTab === 'Rated') this.onRated(page);
+    if (currentTab === 'Search') this.onSearch(searchPhrase, page );
   };
 
-  render() {
-    const { data, isLoading, error, genres, pages, currentPage } = this.state;
-    const { Header, Footer, Content } = Layout;
+  onTabSelect = (event) => {
+    const {key: currentTab} = event;
+    const {searchPhrase, currentPage} = this.state;
+    this.setState({currentTab});
 
+    if (currentTab === 'Rated') this.onRated();
+    if (currentTab === 'Search') this.onSearch(searchPhrase, currentPage);
+  }
+
+  render() {
+
+    const { data, isLoading, error, genres, pages, currentPage, currentTab } = this.state;
+    const { Header, Footer, Content } = Layout;
+    console.log(data)
     const hasData = !(isLoading || error);
 
     const errorMessage = error ? (
       <Alert
         message="Error"
-        description="Something went wrong. Check your Internet connection or try later."
+        description="Something went wrong. Try to search something or try later."
         type="error"
         showIcon
       />
     ) : null;
-    const loader = isLoading ? <Spin size="large" tip="Searching..." /> : null;
+    const loader = isLoading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
     const content = hasData ? <ItemList data={data} /> : null;
+    const searchBar = currentTab === 'Search' ? <SearchBar onSearch={this.onSearch} /> : null;
 
     return (
       <Row>
@@ -88,10 +117,10 @@ export default class App extends React.Component {
           <Layout className="wrapper">
             <Header className="header">
               <Row justify="center">
-                <Filter />
+                <Filter onTabSelect={this.onTabSelect} selected={currentTab} />
               </Row>
               <Row justify="center">
-                <SearchBar onSearch={this.onSearch} />
+                {searchBar}
               </Row>
             </Header>
 

@@ -20,6 +20,7 @@ function Item(props) {
       vote_average: rate,
       genre_ids: genreIds,
       release_date: releaseDate,
+      rating = 0,
       overview,
       id,
     },
@@ -77,7 +78,7 @@ function Item(props) {
         <Rate
           className="rate"
           count={10}
-          defaultValue={0}
+          defaultValue={rating}
           allowHalf
           onChange={(value) => {apiClient.rateMovie(id, value)}}/>
       </Grid>

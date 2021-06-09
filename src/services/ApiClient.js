@@ -66,10 +66,10 @@ export default class ApiClient {
     return this.getCookie('id')
   }
 
-  async getRatedMovies() {
+  async getRatedMovies(page) {
     const guestSessionId = this.getCookie('id');
 
-    return await this.getResource(`/guest_session/${guestSessionId}/rated/movies?language=en-US&sort_by=created_at.asc`);
+    return await this.getResource(`/guest_session/${guestSessionId}/rated/movies?&page=${page}&language=en-US&sort_by=created_at.asc`);
   }
 
   rateMovie(movieId, value) {
