@@ -4,11 +4,12 @@ import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
 
 import 'antd/dist/antd.css';
 import './App.scss';
-// important to place components after css
+// important to place components after styles
 import SearchBar from './components/SearchBar';
 import Filter from './components/Filter';
 import ItemList from './components/ItemList';
 import ApiClient from './services/ApiClient';
+import GenreContext from './context';
 
 export default class App extends React.Component {
   apiClient = new ApiClient();
@@ -78,7 +79,7 @@ export default class App extends React.Component {
       />
     ) : null;
     const loader = isLoading ? <Spin size="large" tip="Searching..." /> : null;
-    const content = hasData ? <ItemList data={data} genres={genres} /> : null;
+    const content = hasData ? <ItemList data={data} /> : null;
 
     return (
       <Row>
@@ -94,13 +95,15 @@ export default class App extends React.Component {
               </Row>
             </Header>
 
-            <Content className="content">
-              <Row justify="center">
-                {errorMessage}
-                {loader}
-                {content}
-              </Row>
-            </Content>
+            <GenreContext.Provider value={genres}>
+              <Content className="content">
+                <Row justify="center">
+                  {errorMessage}
+                  {loader}
+                  {content}
+                </Row>
+              </Content>
+            </GenreContext.Provider>
 
             <Footer className="footer">
               <Row justify="center">

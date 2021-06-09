@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
 
 import ApiClient from '../../../services/ApiClient';
+import GenreContext from '../../../context';
 
 import './Item.scss';
 import noImage from './no-image.png';
@@ -22,16 +23,23 @@ function Item(props) {
       overview,
       id,
     },
-    genres,
   } = props;
 
-  const genreTags = genreIds.map((item, i) =>
-    i < 3 ? (
-      <Tag key={item} className="tag">
-        {genres.get(item)}
-      </Tag>
-    ) : null
-  );
+  function createGenreTags() {
+
+    return (
+      <GenreContext.Consumer>
+        {(genres) => genreIds.map((item, i) =>
+          (i < 3) ? (
+            <Tag key={item} className="tag">
+              {genres.get(item)}
+            </Tag>
+          ) : null
+        )}
+      </GenreContext.Consumer>
+    );
+  }
+
 
   function setColor(value) {
     if (value <=3) return '#E90000'
@@ -56,7 +64,7 @@ function Item(props) {
         <Space direction="vertical">
           <Text type="secondary">{releaseDate}</Text>
 
-          <Row>{genreTags}</Row>
+          <Row>{createGenreTags()}</Row>
           <Paragraph
             ellipsis={{
               rows: 6,
@@ -79,12 +87,10 @@ function Item(props) {
 
 Item.defaultProps = {
   data: {},
-  genres: new Map(),
 };
 
 Item.propTypes = {
   data: PropTypes.instanceOf(Object),
-  genres: PropTypes.instanceOf(Map),
 };
 
 export default Item;
