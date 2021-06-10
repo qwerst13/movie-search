@@ -1,3 +1,4 @@
 # React App for searching movies
 
-currently not deployed...
+Deployed to the following URLs:  
+https://movie-search-roan.vercel.app/
