@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Rate, Row, Space, Tag, Typography } from 'antd';
+import { Card, Rate, Row, Tag, Typography } from 'antd';
 
 import ApiClient from '../../../services/ApiClient';
 import GenreContext from '../../../context';
@@ -13,6 +13,7 @@ const apiClient = new ApiClient();
 function Item(props) {
   const { Title, Text, Paragraph } = Typography;
   const { Grid } = Card;
+
   const {
     data: {
       poster_path: poster,
@@ -41,7 +42,6 @@ function Item(props) {
     );
   }
 
-
   function setColor(value) {
     if (value <=3) return '#E90000'
     if (value <=5) return '#E97E00'
@@ -50,8 +50,8 @@ function Item(props) {
   }
 
   return (
-    <Card className="item">
-      <Grid hoverable={false} className="poster">
+    <Card className="card">
+      <Grid hoverable={false} className="card__poster">
         <img alt="poster" src={poster ? `https://image.tmdb.org/t/p/w200${poster}` : noImage} />
       </Grid>
 
@@ -62,19 +62,21 @@ function Item(props) {
           </Title>
           <div style={{ 'border': `2px solid ${setColor(rate)}` }} className="titleRate">{rate}</div>
         </Row>
-        <Space direction="vertical">
-          <Text type="secondary">{releaseDate}</Text>
 
-          <Row>{createGenreTags()}</Row>
-          <Paragraph
-            ellipsis={{
-              rows: 6,
-              expandable: false,
-            }}
-          >
-            {overview}
-          </Paragraph>
-        </Space>
+        <Text className="releaseDate" type="secondary">{releaseDate}</Text>
+
+        <Row className="tags">{createGenreTags()}</Row>
+
+        <Paragraph
+          className="overview"
+          ellipsis={{
+            rows: 6,
+            expandable: false,
+          }}
+        >
+          {overview}
+        </Paragraph>
+
         <Rate
           className="rate"
           count={10}

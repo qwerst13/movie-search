@@ -8,6 +8,7 @@ import './App.scss';
 import SearchBar from './components/SearchBar';
 import Filter from './components/Filter';
 import ItemList from './components/ItemList';
+import ErrorBoundary from './components/ErrorBoundary';
 import ApiClient from './services/ApiClient';
 import GenreContext from './context';
 
@@ -95,7 +96,6 @@ export default class App extends React.Component {
 
     const { data, isLoading, error, genres, pages, currentPage, currentTab } = this.state;
     const { Header, Footer, Content } = Layout;
-    console.log(data)
     const hasData = !(isLoading || error);
 
     const errorMessage = error ? (
@@ -112,44 +112,50 @@ export default class App extends React.Component {
 
     return (
       <Row>
-        <Col span={5} />
-        <Col span={14}>
+        <Col lg={5} span={0} />
+        <Col lg={14} span={24}>
           <Layout className="wrapper">
-            <Header className="header">
-              <Row justify="center">
-                <Filter onTabSelect={this.onTabSelect} selected={currentTab} />
-              </Row>
-              <Row justify="center">
-                {searchBar}
-              </Row>
-            </Header>
-
-            <GenreContext.Provider value={genres}>
-              <Content className="content">
+            <ErrorBoundary>
+              <Header className="header">
                 <Row justify="center">
-                  {errorMessage}
-                  {loader}
-                  {content}
+                  <Filter onTabSelect={this.onTabSelect} selected={currentTab} />
                 </Row>
-              </Content>
-            </GenreContext.Provider>
+                <Row justify="center">
+                  {searchBar}
+                </Row>
+              </Header>
+            </ErrorBoundary>
 
-            <Footer className="footer">
-              <Row justify="center">
-                <Pagination
-                  size="small"
-                  hideOnSinglePage
-                  current={currentPage}
-                  defaultPageSize={20}
-                  pageSizeOptions={[]}
-                  total={pages * 20}
-                  onChange={this.onPaginationChange}
-                />
-              </Row>
-            </Footer>
+            <ErrorBoundary>
+              <GenreContext.Provider value={genres}>
+                <Content className="content">
+                  <Row justify="center">
+                    {errorMessage}
+                    {loader}
+                    {content}
+                  </Row>
+                </Content>
+              </GenreContext.Provider>
+            </ErrorBoundary>
+
+            <ErrorBoundary>
+              <Footer className="footer">
+                <Row justify="center">
+                  <Pagination
+                    size="small"
+                    hideOnSinglePage
+                    current={currentPage}
+                    defaultPageSize={20}
+                    pageSizeOptions={[]}
+                    total={pages * 20}
+                    onChange={this.onPaginationChange}
+                  />
+                </Row>
+              </Footer>
+            </ErrorBoundary>
           </Layout>
         </Col>
-        <Col span={5} />
+        <Col lg={5} span={0} />
       </Row>
     );
   }

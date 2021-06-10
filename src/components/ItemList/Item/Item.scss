@@ -1,58 +1,79 @@
-.item {
+@import "src/scss/variables";
+
+.card {
   width: 500px;
   height: 300px;
   margin: 12px;
+  padding: 0;
   box-shadow: 1px 1px 3px 0 lightgray;
+
+  @media (max-width: $screen-sm) {
+    width: 100%;
+  }
 
   &:hover {
     cursor: pointer;
     box-shadow: 1px 1px 5px 3px lightskyblue;
   }
-}
-.poster {
-  width: 200px;
-  height: 100%;
-  padding: 0;
-  overflow: hidden;
 
-  img {
+  .card__poster {
     width: 200px;
+    height: 100%;
+    line-height: 296px;
+    padding: 0;
+    overflow: hidden;
+
+    @media (max-width: $screen-sm) {
+      width: 60px;
+      line-height: unset;
+      display: inline-block;
+    }
+
+    img {
+      width: 100%;
+
+
+    }
+  }
+  .cardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 299px;
+    height: 300px;
+    padding: 15px;
+    font-size: 12px;
+
+    .cardTitle {
+
+      .titleText {
+        flex-basis: 85%;
+      }
+      .titleRate {
+        width: 32px;
+        height: 32px;
+        border: 2px solid gray;
+        border-radius: 50%;
+        font-weight: 700;
+        text-align: center;
+        line-height: 28px;
+
+
+      }
+
+    }
+    .cardInfo {
+
+      .tag{
+        font-size: 12px;
+      }
+    }
+    .rate {
+      font-size: 18px;
+      align-self: center;
+      margin-top: auto;
+    }
   }
 }
-.cardTitle {
-
-  .titleText {
-    flex-basis: 85%;
-  }
-  .titleRate {
-    width: 32px;
-    height: 32px;
-    border: 2px solid gray;
-    border-radius: 50%;
-    font-weight: 700;
-    text-align: center;
-    line-height: 28px;
 
 
-  }
-
-}
-// todo ширину высчитать по формуле, высота равна высоте .item
-.cardContent {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 299px;
-  height: 300px;
-  padding: 15px;
-  font-size: 12px;
-}
-.tag{
-  font-size: 12px;
-}
-
-.rate {
-  font-size: 18px;
-  align-self: center;
-  margin-top: auto;
-}
