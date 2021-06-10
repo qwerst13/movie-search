@@ -23,14 +23,14 @@ export default class App extends React.Component {
     searchPhrase: '',
     pages: 1,
     currentPage: 1,
-    currentTab: 'Search'
+    currentTab: 'Search',
   };
 
   componentDidMount() {
     Promise.all([
       this.apiClient.getListOfPopularMovies(),
       this.apiClient.getGenresMap(),
-      this.apiClient.getGuestSessionId()
+      this.apiClient.getGuestSessionId(),
     ])
       .then(([popularFilms, genres]) => {
         this.setState({
@@ -39,10 +39,12 @@ export default class App extends React.Component {
           isLoading: false,
         });
       })
-      .catch(() => this.setState({
-        error: true,
-        isLoading: false
-      }));
+      .catch(() =>
+        this.setState({
+          error: true,
+          isLoading: false,
+        })
+      );
   }
 
   onError = () => {
@@ -51,7 +53,7 @@ export default class App extends React.Component {
 
   onSearch = (value, page = 1) => {
     if (!value) {
-      this.setState({isLoading: false, error: false, searchPhrase: '', data: [], pages: 1, currentPage: 1 });
+      this.setState({ isLoading: false, error: false, searchPhrase: '', data: [], pages: 1, currentPage: 1 });
       return;
     }
 
@@ -74,26 +76,25 @@ export default class App extends React.Component {
         this.setState({ data: results, isLoading: false, pages: totalPages });
       })
       .catch(this.onError);
-  }
+  };
 
   onPaginationChange = (page) => {
     const { searchPhrase, currentTab } = this.state;
 
     if (currentTab === 'Rated') this.onRated(page);
-    if (currentTab === 'Search') this.onSearch(searchPhrase, page );
+    if (currentTab === 'Search') this.onSearch(searchPhrase, page);
   };
 
   onTabSelect = (event) => {
-    const {key: currentTab} = event;
-    const {searchPhrase, currentPage} = this.state;
-    this.setState({currentTab});
+    const { key: currentTab } = event;
+    const { searchPhrase, currentPage } = this.state;
+    this.setState({ currentTab });
 
     if (currentTab === 'Rated') this.onRated();
     if (currentTab === 'Search') this.onSearch(searchPhrase, currentPage);
-  }
+  };
 
   render() {
-
     const { data, isLoading, error, genres, pages, currentPage, currentTab } = this.state;
     const { Header, Footer, Content } = Layout;
     const hasData = !(isLoading || error);
@@ -113,16 +114,14 @@ export default class App extends React.Component {
     return (
       <Row>
         <Col lg={5} span={0} />
-        <Col lg={14} span={24}>
+        <Col className="col-wrapper" lg={14} span={24}>
           <Layout className="wrapper">
             <ErrorBoundary>
               <Header className="header">
                 <Row justify="center">
                   <Filter onTabSelect={this.onTabSelect} selected={currentTab} />
                 </Row>
-                <Row justify="center">
-                  {searchBar}
-                </Row>
+                <Row justify="center">{searchBar}</Row>
               </Header>
             </ErrorBoundary>
 

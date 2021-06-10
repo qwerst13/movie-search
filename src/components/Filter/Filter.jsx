@@ -8,25 +8,29 @@ function Filter(props) {
   const { selected, onTabSelect } = props;
   const itemStyle = {
     margin: '0',
-    padding: '0 20px'
-  }
+    padding: '0 20px',
+  };
 
   return (
     <Menu onClick={onTabSelect} selectedKeys={selected} mode="horizontal" className="filter">
-      <Menu.Item style={itemStyle} key="Search">Search</Menu.Item>
-      <Menu.Item style={itemStyle} key="Rated">Rated</Menu.Item>
+      <Menu.Item style={itemStyle} key="Search">
+        Search
+      </Menu.Item>
+      <Menu.Item style={itemStyle} key="Rated">
+        Rated
+      </Menu.Item>
     </Menu>
   );
 }
 
 Filter.defaultProps = {
   selected: 'Search',
-  onTabSelect: () => {}
-}
+  onTabSelect: () => {},
+};
 
 Filter.propTypes = {
   selected: PropTypes.string,
-  onTabSelect: PropTypes.func
-}
+  onTabSelect: PropTypes.func,
+};
 
 export default Filter;

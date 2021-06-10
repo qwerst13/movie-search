@@ -9,6 +9,7 @@
 
   @media (max-width: $screen-sm) {
     width: 100%;
+    height: 320px;
   }
 
   &:hover {
@@ -16,7 +17,7 @@
     box-shadow: 1px 1px 5px 3px lightskyblue;
   }
 
-  .card__poster {
+  &__poster {
     width: 200px;
     height: 100%;
     line-height: 296px;
@@ -25,17 +26,19 @@
 
     @media (max-width: $screen-sm) {
       width: 60px;
+      max-height: 90px;
       line-height: unset;
-      display: inline-block;
+      position: absolute;
+      float: left;
+      margin: 10px;
+      box-shadow: none;
     }
 
     img {
       width: 100%;
-
-
     }
   }
-  .cardContent {
+  &__content {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -44,12 +47,18 @@
     padding: 15px;
     font-size: 12px;
 
-    .cardTitle {
+    @media (max-width: $screen-sm) {
+      width: 100%;
+      height: 320px;
+      padding-left: 80px;
+    }
 
-      .titleText {
+    .title {
+
+      &__text {
         flex-basis: 85%;
       }
-      .titleRate {
+      &__rate {
         width: 32px;
         height: 32px;
         border: 2px solid gray;
@@ -57,21 +66,32 @@
         font-weight: 700;
         text-align: center;
         line-height: 28px;
-
-
       }
+    }
+    .release-date {
 
     }
-    .cardInfo {
-
-      .tag{
+    .tags {
+      margin: 10px 0;
+      .tag {
         font-size: 12px;
+      }
+    }
+    .overview {
+      @media (max-width: $screen-sm) {
+        margin-left: -70px;
+        margin-top: 10px;
       }
     }
     .rate {
       font-size: 18px;
       align-self: center;
       margin-top: auto;
+
+      @media (max-width: $screen-sm) {
+        align-self: flex-end;
+        margin-left: -70px;
+      }
     }
   }
 }

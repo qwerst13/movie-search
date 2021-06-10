@@ -28,25 +28,26 @@ function Item(props) {
   } = props;
 
   function createGenreTags() {
-
     return (
       <GenreContext.Consumer>
-        {(genres) => genreIds.map((item, i) =>
-          (i < 3) ? (
-            <Tag key={item} className="tag">
-              {genres.get(item)}
-            </Tag>
-          ) : null
-        )}
+        {(genres) =>
+          genreIds.map((item, i) =>
+            i < 3 ? (
+              <Tag key={item} className="tag">
+                {genres.get(item)}
+              </Tag>
+            ) : null
+          )
+        }
       </GenreContext.Consumer>
     );
   }
 
   function setColor(value) {
-    if (value <=3) return '#E90000'
-    if (value <=5) return '#E97E00'
-    if (value <=7) return '#E9D100'
-    return '#66E900'
+    if (value <= 3) return '#E90000';
+    if (value <= 5) return '#E97E00';
+    if (value <= 7) return '#E9D100';
+    return '#66E900';
   }
 
   return (
@@ -55,22 +56,26 @@ function Item(props) {
         <img alt="poster" src={poster ? `https://image.tmdb.org/t/p/w200${poster}` : noImage} />
       </Grid>
 
-      <Grid hoverable={false} className="cardContent">
-        <Row className="cardTitle" justify="space-between">
-          <Title className="titleText" level={4} ellipsis={{ rows: 2, expandable: false }}>
+      <Grid hoverable={false} className="card__content">
+        <Row className="card__title title" justify="space-between">
+          <Title className="title__text" level={4} ellipsis={{ rows: 2, expandable: false }}>
             {title}
           </Title>
-          <div style={{ 'border': `2px solid ${setColor(rate)}` }} className="titleRate">{rate}</div>
+          <div style={{ border: `2px solid ${setColor(rate)}` }} className="title__rate">
+            {rate}
+          </div>
         </Row>
 
-        <Text className="releaseDate" type="secondary">{releaseDate}</Text>
+        <Text className="release-date" type="secondary">
+          {releaseDate}
+        </Text>
 
         <Row className="tags">{createGenreTags()}</Row>
 
         <Paragraph
           className="overview"
           ellipsis={{
-            rows: 6,
+            rows: 5,
             expandable: false,
           }}
         >
@@ -82,7 +87,10 @@ function Item(props) {
           count={10}
           defaultValue={rating}
           allowHalf
-          onChange={(value) => {apiClient.rateMovie(id, value)}}/>
+          onChange={(value) => {
+            apiClient.rateMovie(id, value);
+          }}
+        />
       </Grid>
     </Card>
   );
