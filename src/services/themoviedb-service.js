@@ -1,11 +1,11 @@
-/* eslint-disable max-len */
-export default class ApiClient {
+export default class ThemoviedbServices {
   _host = 'https://api.themoviedb.org/3';
+
+  _key = process.env.REACT_APP_API_KEY;
 
   requestOptions(type, data) {
     const obj = {
       method: type,
-      headers: this.headers(),
       redirect: 'follow'
     }
     if (data) obj.body = data;
@@ -13,19 +13,8 @@ export default class ApiClient {
     return obj;
   }
 
-  headers() {
-    const myHeaders = new Headers();
-
-    myHeaders.append(
-      'Authorization',
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMmVhYWQzNGZmYzg5M2VhYzUyYzNmNWFhYzkzNDEzZCIsInN1YiI6IjYwYTE5MjUwMDBiZmU4MDA0MTllY2UyNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.C9vtZbeC6hb6Q5bWwCk-Ct2xEI-Q_nyE819PaG0ZZlo'
-    );
-
-    return myHeaders;
-  }
-
-  async getResource(path) {
-    const response = await fetch(`${this._host}${path}`, this.requestOptions('GET'));
+  async request(path, queryString, options) {
+    const response = await fetch(`${this._host}${path}?api_key=${this._key}${queryString}`, options);
 
     if (!response.ok) {
       throw new Error(`Something went wrong: ${response}`);
@@ -35,19 +24,33 @@ export default class ApiClient {
   }
 
   async getListOfPopularMovies() {
-    return await this.getResource('/movie/popular')
+    return await this.request('/movie/popular',
+      '',
+      this.requestOptions('GET'))
   }
 
   async getFilmById(id) {
-    return await this.getResource(`/movie/${id}`);
+    return await this.request(
+      `/movie/${id}`,
+      '',
+      this.requestOptions('GET')
+      );
   }
 
   async getFilmsByName(keyWord, page) {
-    return await this.getResource(`/search/movie?language=en-US&query=${keyWord}&page=${page}&include_adult=false`)
+    return await this.request(
+      `/search/movie`,
+      `&language=en-US&query=${keyWord}&page=${page}&include_adult=false`,
+      this.requestOptions('GET')
+    )
   }
 
   async getGenresMap() {
-     const {genres} = await this.getResource(`/genre/movie/list?language=en-US`);
+     const {genres} = await this.request(
+       `/genre/movie/list`,
+       `&language=en-US`,
+       this.requestOptions('GET')
+       );
      const genresMap = new Map();
 
      genres.forEach(({ id, name }) => {
@@ -59,7 +62,11 @@ export default class ApiClient {
 
   async getGuestSessionId() {
     if (!this.getCookie('id')) {
-      const { guest_session_id: guestSessionId } = await this.getResource('/authentication/guest_session/new');
+      const { guest_session_id: guestSessionId } = await this.request(
+        '/authentication/guest_session/new',
+        '',
+        this.requestOptions('GET')
+      );
       this.setDailyCookie('id', guestSessionId);
     }
 
@@ -69,7 +76,11 @@ export default class ApiClient {
   async getRatedMovies(page) {
     const guestSessionId = this.getCookie('id');
 
-    return await this.getResource(`/guest_session/${guestSessionId}/rated/movies?&page=${page}&language=en-US&sort_by=created_at.asc`);
+    return await this.request(
+      `/guest_session/${guestSessionId}/rated/movies`,
+      `&page=${page}&language=en-US&sort_by=created_at.asc`,
+      this.requestOptions('GET')
+    );
   }
 
   rateMovie(movieId, value) {
@@ -77,7 +88,11 @@ export default class ApiClient {
     const formData = new FormData();
     formData.append("value", value);
 
-    fetch(`${this._host}/movie/${movieId}/rating?guest_session_id=${guestSessionId}`, this.requestOptions('POST', formData));
+    this.request(
+      `/movie/${movieId}/rating`,
+      `&guest_session_id=${guestSessionId}`,
+      this.requestOptions('POST', formData)
+    )
   }
 
   setDailyCookie(key, value) {

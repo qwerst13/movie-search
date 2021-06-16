@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Rate, Row, Tag, Typography } from 'antd';
 
-import ApiClient from '../../../services/ApiClient';
+import ThemoviedbService from '../../../services/themoviedb-service';
 import GenreContext from '../../../context';
 
 import './Item.scss';
 import noImage from './no-image.png';
 
-const apiClient = new ApiClient();
+const apiClient = new ThemoviedbService();
 
 function Item(props) {
   const { Title, Text, Paragraph } = Typography;

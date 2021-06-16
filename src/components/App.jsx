@@ -5,15 +5,15 @@ import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
 import 'antd/dist/antd.css';
 import './App.scss';
 // important to place components after styles
-import SearchBar from './components/SearchBar';
-import Filter from './components/Filter';
-import ItemList from './components/ItemList';
-import ErrorBoundary from './components/ErrorBoundary';
-import ApiClient from './services/ApiClient';
-import GenreContext from './context';
+import SearchBar from './SearchBar';
+import Filter from './Filter';
+import ItemList from './ItemList';
+import ErrorBoundary from './ErrorBoundary';
+import ThemoviedbService from '../services/themoviedb-service';
+import GenreContext from '../context';
 
 export default class App extends React.Component {
-  apiClient = new ApiClient();
+  apiClient = new ThemoviedbService();
 
   state = {
     data: [],
