@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import { Layout, Pagination, Row, Col, Spin, Alert } from 'antd';
+import { Layout, Row, Col, Spin, Alert } from 'antd';
 
 import 'antd/dist/antd.css';
 import './App.scss';
@@ -53,11 +54,25 @@ export default class App extends React.Component {
 
   onSearch = (value, page = 1) => {
     if (!value) {
-      this.setState({ isLoading: false, error: false, searchPhrase: '', data: [], pages: 1, currentPage: 1 });
+      this.setState({
+        isLoading: false,
+        error: false,
+        searchPhrase: '',
+        data: [],
+        pages: 1,
+        currentPage: 1,
+        currentTab: 'Search',
+      });
       return;
     }
 
-    this.setState({ isLoading: true, error: false, searchPhrase: value, currentPage: page });
+    this.setState({
+      isLoading: true,
+      error: false,
+      searchPhrase: value,
+      currentPage: page,
+      currentTab: 'Search',
+    });
 
     this.apiClient
       .getFilmsByName(value, page)
@@ -68,7 +83,7 @@ export default class App extends React.Component {
   };
 
   onRated = (page = 1) => {
-    this.setState({ isLoading: true, error: false, currentPage: page });
+    this.setState({ isLoading: true, error: false, currentPage: page, currentTab: 'Rated' });
 
     this.apiClient
       .getRatedMovies(page)
@@ -78,25 +93,9 @@ export default class App extends React.Component {
       .catch(this.onError);
   };
 
-  onPaginationChange = (page) => {
-    const { searchPhrase, currentTab } = this.state;
-
-    if (currentTab === 'Rated') this.onRated(page);
-    if (currentTab === 'Search') this.onSearch(searchPhrase, page);
-  };
-
-  onTabSelect = (event) => {
-    const { key: currentTab } = event;
-    const { searchPhrase, currentPage } = this.state;
-    this.setState({ currentTab });
-
-    if (currentTab === 'Rated') this.onRated();
-    if (currentTab === 'Search') this.onSearch(searchPhrase, currentPage);
-  };
-
   render() {
-    const { data, isLoading, error, genres, pages, currentPage, currentTab } = this.state;
-    const { Header, Footer, Content } = Layout;
+    const { data, isLoading, error, genres, pages, currentPage, currentTab, searchPhrase } = this.state;
+
     const hasData = !(isLoading || error);
 
     const errorMessage = error ? (
@@ -108,54 +107,66 @@ export default class App extends React.Component {
       />
     ) : null;
     const loader = isLoading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
-    const content = hasData ? <ItemList data={data} /> : null;
+    const content = hasData ? (
+      <ItemList
+        data={data}
+        pages={pages}
+        currentPage={currentPage}
+        searchPhrase={searchPhrase}
+        currentTab={currentTab}
+        onSearch={this.onSearch}
+        onRated={this.onRated}
+      />
+    ) : null;
     const searchBar = currentTab === 'Search' ? <SearchBar onSearch={this.onSearch} /> : null;
 
     return (
+      <AppLayout>
+        <>
+          <Filter
+            onSearch={this.onSearch}
+            onRated={this.onRated}
+            selected={currentTab}
+            searchPhrase={searchPhrase}
+            currentPage={currentPage}
+          />
+          {searchBar}
+        </>
+
+        <GenreContext.Provider value={genres}>
+          {errorMessage}
+          {loader}
+          {content}
+        </GenreContext.Provider>
+      </AppLayout>
+    );
+  }
+}
+
+function AppLayout({ children }) {
+  const { Header, Content } = Layout;
+
+  const [header, main] = children;
+
+  return (
+    <ErrorBoundary>
       <Row>
         <Col lg={5} span={0} />
         <Col className="col-wrapper" lg={14} span={24}>
           <Layout className="wrapper">
-            <ErrorBoundary>
-              <Header className="header">
-                <Row justify="center">
-                  <Filter onTabSelect={this.onTabSelect} selected={currentTab} />
-                </Row>
-                <Row justify="center">{searchBar}</Row>
-              </Header>
-            </ErrorBoundary>
+            <Header className="header">{header}</Header>
 
-            <ErrorBoundary>
-              <GenreContext.Provider value={genres}>
-                <Content className="content">
-                  <Row justify="center">
-                    {errorMessage}
-                    {loader}
-                    {content}
-                  </Row>
-                </Content>
-              </GenreContext.Provider>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-              <Footer className="footer">
-                <Row justify="center">
-                  <Pagination
-                    size="small"
-                    hideOnSinglePage
-                    current={currentPage}
-                    defaultPageSize={20}
-                    pageSizeOptions={[]}
-                    total={pages * 20}
-                    onChange={this.onPaginationChange}
-                  />
-                </Row>
-              </Footer>
-            </ErrorBoundary>
+            <Content className="content">
+              <Row justify="center">{main}</Row>
+            </Content>
           </Layout>
         </Col>
         <Col lg={5} span={0} />
       </Row>
-    );
-  }
+    </ErrorBoundary>
+  );
 }
+
+AppLayout.propTypes = {
+  children: PropTypes.element.isRequired,
+};

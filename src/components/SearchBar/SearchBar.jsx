@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import { Input } from 'antd';
+import { Input, Row } from 'antd';
 
 import './SearchBar.scss';
 
@@ -36,12 +36,14 @@ export default class SearchBar extends React.Component {
 
   render() {
     return (
-      <Input
-        className="searchBar"
-        size="large"
-        placeholder="Type to search..."
-        onChange={_.debounce(this.onChange, 1000)}
-      />
+      <Row justify="center">
+        <Input
+          className="searchBar"
+          size="large"
+          placeholder="Type to search..."
+          onChange={_.debounce(this.onChange, 1000)}
+        />
+      </Row>
     );
   }
 }
