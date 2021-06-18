@@ -8,9 +8,10 @@ import GenreContext from '../../../context';
 import './Item.scss';
 import noImage from './no-image.png';
 
+
 const apiClient = new ThemoviedbService();
 
-function Item(props) {
+export default function Item(props) {
   const { Title, Text, Paragraph } = Typography;
   const { Grid } = Card;
 
@@ -103,5 +104,3 @@ Item.defaultProps = {
 Item.propTypes = {
   data: PropTypes.instanceOf(Object),
 };
-
-export default Item;

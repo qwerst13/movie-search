@@ -4,7 +4,7 @@ import { Menu, Row } from 'antd';
 
 import './Filter.scss';
 
-function Filter(props) {
+export default function Filter(props) {
   const { selected, onSearch, onRated, searchPhrase, currentPage } = props;
   const itemStyle = {
     margin: '0',
@@ -47,5 +47,3 @@ Filter.propTypes = {
   searchPhrase: PropTypes.string,
   currentPage: PropTypes.number,
 };
-
-export default Filter;

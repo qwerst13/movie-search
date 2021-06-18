@@ -7,7 +7,7 @@ import './ItemList.scss';
 
 import Item from './Item';
 
-function ItemList(props) {
+export default function ItemList(props) {
   const { data, pages, currentPage, searchPhrase, currentTab, onRated, onSearch } = props;
 
   const elements =
@@ -60,5 +60,3 @@ ItemList.defaultProps = {
   pages: PropTypes.number,
   currentTab: PropTypes.string,
 };
-
-export default ItemList;
