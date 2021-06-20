@@ -6,11 +6,26 @@ body {
   background: white;
   width: 100%;
 }
+.ant-tabs {
+  padding: 20px 0;
+}
+.ant-tabs-nav {
+  align-self: center;
+  width: fit-content;
+}
+.ant-tabs-tab {
+  margin: 0;
+  padding: 5px 20px 20px;
+}
+.ant-tabs-tab + .ant-tabs-tab {
+  margin: 0;
+}
 .ant-pagination-options {
   display: none;
 }
 .spinner {
   margin: 20px 0;
+  width: 100%;
 }
 .col-wrapper{
   min-height: 100vh;

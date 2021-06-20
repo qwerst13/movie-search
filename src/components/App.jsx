@@ -1,18 +1,78 @@
-import React from 'react';
+/* eslint-disable */
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
-import { Layout, Row, Col, Spin, Alert } from 'antd';
+import { Layout, Row, Col, Spin, Alert, Tabs } from 'antd';
 
 import 'antd/dist/antd.css';
 import './App.scss';
 // important to place components after styles
-import SearchBar from './SearchBar';
-import Filter from './Filter';
-import ItemList from './ItemList';
 import ErrorBoundary from './ErrorBoundary';
-import ThemoviedbService from '../services/themoviedb-service';
+import ThemoviedbServices from '../services/themoviedb-service';
 import GenreContext from '../context';
+import SearchPage from '../components/SearchPage';
+import RatedPage from '../components/RatedPage';
 
+export default function App() {
+  const [genres, setGenres] = useState(new Map());
+  const [activeKey, setActiveKey] = useState(1);
+  const apiClient = new ThemoviedbServices();
+
+  useEffect(() => {
+    Promise.all([
+      apiClient.getGenresMap(),
+      apiClient.getGuestSessionId(),
+    ])
+      .then(([genres]) => {
+        setGenres(genres);
+      })
+  },[]);
+
+  const {TabPane} = Tabs;
+
+  return (
+      <GenreContext.Provider value={genres}>
+        <AppLayout>
+          <Tabs defaultActiveKey="1" centered onChange={(key) => setActiveKey(key)}>
+            <TabPane tab="Search" key="1">
+              <SearchPage />
+            </TabPane>
+
+            <TabPane tab="Rated" key="2">
+              <RatedPage activeKey={activeKey}/>
+            </TabPane>
+          </Tabs>
+        </AppLayout>
+      </GenreContext.Provider>
+  )
+}
+
+function AppLayout({ children }) {
+  const { Content } = Layout;
+
+  return (
+    <Row>
+      <Col lg={5} span={0} />
+      <Col className="col-wrapper" lg={14} span={24}>
+        <Layout className="wrapper">
+          <Content className="content">
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </Content>
+        </Layout>
+      </Col>
+      <Col lg={5} span={0} />
+    </Row>
+  );
+}
+
+AppLayout.propTypes = {
+  children: PropTypes.element.isRequired,
+};
+
+
+/*
 export default class App extends React.Component {
   apiClient = new ThemoviedbService();
 
@@ -143,30 +203,5 @@ export default class App extends React.Component {
   }
 }
 
-function AppLayout({ children }) {
-  const { Header, Content } = Layout;
 
-  const [header, main] = children;
-
-  return (
-    <ErrorBoundary>
-      <Row>
-        <Col lg={5} span={0} />
-        <Col className="col-wrapper" lg={14} span={24}>
-          <Layout className="wrapper">
-            <Header className="header">{header}</Header>
-
-            <Content className="content">
-              <Row justify="center">{main}</Row>
-            </Content>
-          </Layout>
-        </Col>
-        <Col lg={5} span={0} />
-      </Row>
-    </ErrorBoundary>
-  );
-}
-
-AppLayout.propTypes = {
-  children: PropTypes.element.isRequired,
-};
+*/
