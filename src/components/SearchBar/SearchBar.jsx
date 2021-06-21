@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -6,44 +6,28 @@ import { Input, Row } from 'antd';
 
 import './SearchBar.scss';
 
-export default class SearchBar extends React.Component {
-  static defaultProps = {
-    onSearch: () => {},
-  };
+export default function SearchBar({ onSearch }) {
+  const [searchPhrase, setSearchPhrase] = useState('');
 
-  static propTypes = {
-    onSearch: PropTypes.func,
-  };
-
-  state = {
-    value: '',
-  };
-
-  onChange = (event) => {
+  function onChange(event) {
     const { value } = event.target;
 
-    this.setState({ value });
+    setSearchPhrase(value);
 
-    this.onSearch();
-  };
-
-  onSearch = () => {
-    const { value } = this.state;
-    const { onSearch } = this.props;
-
-    onSearch(value);
-  };
-
-  render() {
-    return (
-      <Row justify="center">
-        <Input
-          className="searchBar"
-          size="large"
-          placeholder="Type to search..."
-          onChange={_.debounce(this.onChange, 1000)}
-        />
-      </Row>
-    );
+    onSearch(searchPhrase);
   }
+
+  return (
+    <Row justify="center">
+      <Input className="searchBar" size="large" placeholder="Type to search..." onChange={_.debounce(onChange, 1000)} />
+    </Row>
+  );
 }
+
+SearchBar.propTypes = {
+  onSearch: PropTypes.func,
+};
+
+SearchBar.defaultProps = {
+  onSearch: () => {},
+};

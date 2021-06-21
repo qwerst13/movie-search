@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Rate, Row, Tag, Typography } from 'antd';
 
@@ -9,12 +8,11 @@ import GenreContext from '../../../context';
 import './Item.scss';
 import noImage from './no-image.png';
 
-
-const apiClient = new ThemoviedbService();
-
 export default function Item(props) {
   const { Title, Text, Paragraph } = Typography;
   const { Grid } = Card;
+
+  const apiClient = new ThemoviedbService();
 
   const {
     data: {
@@ -29,19 +27,15 @@ export default function Item(props) {
     },
   } = props;
 
+  const genreContext = useContext(GenreContext);
+
   function createGenreTags() {
-    return (
-      <GenreContext.Consumer>
-        {(genres) =>
-          genreIds.map((item, i) =>
-            i < 3 ? (
-              <Tag key={item} className="tag">
-                {genres.get(item)}
-              </Tag>
-            ) : null
-          )
-        }
-      </GenreContext.Consumer>
+    return genreIds.map((item, i) =>
+      i < 3 ? (
+        <Tag key={item} className="tag">
+          {genreContext.get(item)}
+        </Tag>
+      ) : null
     );
   }
 

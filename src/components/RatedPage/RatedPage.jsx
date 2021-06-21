@@ -1,15 +1,14 @@
-/* eslint-disable */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 import { Alert, Spin } from 'antd';
 import ItemList from '../ItemList';
 import ThemoviedbServices from '../../services/themoviedb-service';
 
-
-export default function RatedPage(activeKey) {
+export default function RatedPage({ activeKey }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [pages, setPages] = useState({current: 1, total: 1});
+  const [pages, setPages] = useState({ current: 1, total: 1 });
   const [data, setData] = useState([]);
 
   const apiClient = useMemo(() => new ThemoviedbServices(), []);
@@ -30,19 +29,16 @@ export default function RatedPage(activeKey) {
           setLoading(false);
           setError(false);
           setData(results);
-          setPages({current: page, total: totalPages})
+          setPages({ current: page, total: totalPages });
         })
         .catch(() => onError());
     },
     [apiClient]
   );
 
-  useEffect(
-    () => {
-      searchRated();
-    },
-    [activeKey]
-  );
+  useEffect(() => {
+    searchRated();
+  }, [activeKey, searchRated]);
 
   const hasData = !(loading || error);
 
@@ -55,7 +51,7 @@ export default function RatedPage(activeKey) {
     />
   ) : null;
   const loader = loading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
-  const content = hasData ? <ItemList data={data} pages={pages} onPaginationChange={searchRated}/> : null;
+  const content = hasData ? <ItemList data={data} pages={pages} onPaginationChange={searchRated} /> : null;
 
   return (
     <>
@@ -63,5 +59,9 @@ export default function RatedPage(activeKey) {
       {loader}
       {content}
     </>
-  )
+  );
 }
+
+RatedPage.propTypes = {
+  activeKey: PropTypes.string.isRequired,
+};

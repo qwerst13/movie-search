@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -40,8 +39,11 @@ export default function ItemList(props) {
 
 ItemList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
+  pages: PropTypes.shape({ current: PropTypes.number, total: PropTypes.number }).isRequired,
+  onPaginationChange: PropTypes.func,
 };
 
 ItemList.defaultProps = {
   data: [],
+  onPaginationChange: () => {},
 };
