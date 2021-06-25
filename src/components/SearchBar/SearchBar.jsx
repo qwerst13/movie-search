@@ -13,13 +13,17 @@ export default function SearchBar({ onSearch }) {
     const { value } = event.target;
 
     setSearchPhrase(value);
-
-    onSearch(searchPhrase);
+    if (searchPhrase !== value) onSearch(value);
   }
 
   return (
     <Row justify="center">
-      <Input className="searchBar" size="large" placeholder="Type to search..." onChange={_.debounce(onChange, 1000)} />
+      <Input
+        className="searchBar"
+        size="large"
+        placeholder="Type to search..."
+        onChange={_.debounce(onChange, 1000)}
+      />
     </Row>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { Spin, Alert } from 'antd';
@@ -9,44 +10,32 @@ import ThemoviedbServices from '../../services/themoviedb-service';
 export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [pages, setPages] = useState({ current: 1, total: 1 });
-  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [moviesData, setMoviesData] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
 
-  const apiClient = useMemo(() => new ThemoviedbServices(), []);
+  const apiClient = new ThemoviedbServices();
 
   function onError() {
     setError(true);
     setLoading(false);
   }
 
-  function onSearch(value, page = 1) {
-    if (!value) {
-      setLoading(false);
-      setError(false);
-      setPages({ current: 1, total: 1 });
-      setData([]);
-      setSearchPhrase('');
-
-      return;
-    }
-
+  function updateMovies(value, page = 1) {
     setLoading(true);
     setError(false);
 
     apiClient
       .getFilmsByName(value, page)
-      .then(({ results, total_pages: totalPages }) => {
-        setData(results);
+      .then(({ results, total_pages: totalPagesData }) => {
+        setMoviesData(results);
         setLoading(false);
-        setPages({ current: page, total: totalPages });
+        setCurrentPage(page);
+        setTotalPages(totalPagesData)
         setSearchPhrase(value);
       })
       .catch(() => onError());
-  }
-
-  function onPaginationChange(page) {
-    onSearch(searchPhrase, page);
   }
 
   const hasData = !(loading || error);
@@ -60,21 +49,33 @@ export default function SearchPage() {
     />
   ) : null;
   const loader = loading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
-  const content = hasData ? <ItemList data={data} pages={pages} onPaginationChange={onPaginationChange} /> : null;
+  const content = hasData ? <ItemList
+    data={moviesData}
+    currentPage={currentPage}
+    totalPages={totalPages}
+    onPaginationChange={(page) => setCurrentPage(page)} /> : null;
 
   useEffect(() => {
     apiClient
       .getListOfPopularMovies()
       .then(({ results }) => {
         setLoading(false);
-        setData(results);
+        setMoviesData(results);
       })
       .catch(() => onError());
-  }, [apiClient]);
+  }, [])
+
+  useEffect(() => {
+    if (searchPhrase) updateMovies(searchPhrase, 1);
+  }, [searchPhrase]);
+
+  useEffect(() => {
+    if (searchPhrase) updateMovies(searchPhrase, currentPage);
+  }, [currentPage]);
 
   return (
     <>
-      <SearchBar onSearch={onSearch} />
+      <SearchBar onSearch={(phrase) => setSearchPhrase(phrase)} />
 
       {errorMessage}
       {loader}
