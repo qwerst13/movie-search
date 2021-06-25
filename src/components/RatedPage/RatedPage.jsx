@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { Alert, Spin } from 'antd';
@@ -8,37 +8,36 @@ import ThemoviedbServices from '../../services/themoviedb-service';
 export default function RatedPage({ activeKey }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [pages, setPages] = useState({ current: 1, total: 1 });
-  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [moviesData, setMoviesData] = useState([]);
 
-  const apiClient = useMemo(() => new ThemoviedbServices(), []);
+  const apiClient = new ThemoviedbServices();
 
   function onError() {
     setError(true);
     setLoading(false);
   }
 
-  const searchRated = useCallback(
-    (page = 1) => {
-      setLoading(true);
-      setError(false);
+  function searchRated(page = 1) {
+    setLoading(true);
+    setError(false);
 
-      apiClient
-        .getRatedMovies(page)
-        .then(({ results, total_pages: totalPages }) => {
-          setLoading(false);
-          setError(false);
-          setData(results);
-          setPages({ current: page, total: totalPages });
-        })
-        .catch(() => onError());
-    },
-    [apiClient]
-  );
+    apiClient
+      .getRatedMovies(page)
+      .then(({ results, total_pages: totalPagesData }) => {
+        setLoading(false);
+        setError(false);
+        setMoviesData(results);
+        setCurrentPage(page);
+        setTotalPages(totalPagesData);
+      })
+      .catch(() => onError());
+  }
 
   useEffect(() => {
-    searchRated();
-  }, [activeKey, searchRated]);
+    searchRated(currentPage);
+  }, [activeKey, currentPage]);
 
   const hasData = !(loading || error);
 
@@ -51,7 +50,14 @@ export default function RatedPage({ activeKey }) {
     />
   ) : null;
   const loader = loading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
-  const content = hasData ? <ItemList data={data} pages={pages} onPaginationChange={searchRated} /> : null;
+  const content = hasData ? (
+    <ItemList
+      data={moviesData}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPaginationChange={(page) => setCurrentPage(page)}
+    />
+  ) : null;
 
   return (
     <>

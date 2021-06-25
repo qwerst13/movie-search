@@ -18,12 +18,7 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <Row justify="center">
-      <Input
-        className="searchBar"
-        size="large"
-        placeholder="Type to search..."
-        onChange={_.debounce(onChange, 1000)}
-      />
+      <Input className="searchBar" size="large" placeholder="Type to search..." onChange={_.debounce(onChange, 1000)} />
     </Row>
   );
 }

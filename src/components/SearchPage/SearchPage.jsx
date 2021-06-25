@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Spin, Alert } from 'antd';
 
@@ -32,7 +31,7 @@ export default function SearchPage() {
         setMoviesData(results);
         setLoading(false);
         setCurrentPage(page);
-        setTotalPages(totalPagesData)
+        setTotalPages(totalPagesData);
         setSearchPhrase(value);
       })
       .catch(() => onError());
@@ -49,11 +48,14 @@ export default function SearchPage() {
     />
   ) : null;
   const loader = loading ? <Spin className="spinner" size="large" tip="Searching..." /> : null;
-  const content = hasData ? <ItemList
-    data={moviesData}
-    currentPage={currentPage}
-    totalPages={totalPages}
-    onPaginationChange={(page) => setCurrentPage(page)} /> : null;
+  const content = hasData ? (
+    <ItemList
+      data={moviesData}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPaginationChange={(page) => setCurrentPage(page)}
+    />
+  ) : null;
 
   useEffect(() => {
     apiClient
@@ -63,7 +65,7 @@ export default function SearchPage() {
         setMoviesData(results);
       })
       .catch(() => onError());
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (searchPhrase) updateMovies(searchPhrase, 1);

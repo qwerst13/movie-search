@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { Layout, Row, Col, Tabs } from 'antd';
@@ -15,13 +15,13 @@ import RatedPage from './RatedPage';
 export default function App() {
   const [genres, setGenres] = useState(new Map());
   const [activeKey, setActiveKey] = useState('1');
-  const apiClient = useMemo(() => new ThemoviedbServices(), []);
+  const apiClient = new ThemoviedbServices();
 
   useEffect(() => {
     Promise.all([apiClient.getGenresMap(), apiClient.getGuestSessionId()]).then(([data]) => {
       setGenres(data);
     });
-  }, [apiClient]);
+  }, []);
 
   const { TabPane } = Tabs;
 

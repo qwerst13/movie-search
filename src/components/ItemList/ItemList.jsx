@@ -8,7 +8,7 @@ import './ItemList.scss';
 import Item from './Item';
 
 export default function ItemList(props) {
-  const { data, pages, onPaginationChange } = props;
+  const { data, currentPage, totalPages, onPaginationChange } = props;
 
   const elements =
     data.length > 0 ? (
@@ -26,10 +26,10 @@ export default function ItemList(props) {
         <Pagination
           size="small"
           hideOnSinglePage
-          current={pages.current}
+          current={currentPage}
           defaultPageSize={20}
           pageSizeOptions={[]}
-          total={pages.total * 20}
+          total={totalPages * 20}
           onChange={onPaginationChange}
         />
       </Row>
@@ -39,11 +39,14 @@ export default function ItemList(props) {
 
 ItemList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
-  pages: PropTypes.shape({ current: PropTypes.number, total: PropTypes.number }).isRequired,
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
   onPaginationChange: PropTypes.func,
 };
 
 ItemList.defaultProps = {
   data: [],
+  currentPage: 1,
+  totalPages: 1,
   onPaginationChange: () => {},
 };
